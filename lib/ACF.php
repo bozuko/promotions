@@ -7,6 +7,9 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
    */
   public function register_fields()
   {
+		
+		if( !function_exists('get_field') ) return;
+		
     $this->dev_mode = get_field('promotions_dev', 'option');
     if( get_field('promotions_dev', 'option') ){
       // we are going to use the fields from the database

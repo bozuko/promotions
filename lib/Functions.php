@@ -17,7 +17,7 @@ class Promotions_Functions
   public function is_before_start( $post_id )
   {
     $now = new DateTime( 'now', $this->get_timezone() );
-    $start = $this->get_start();
+    $start = $this->get_start( $post_id );
     $before = $now->getTimestamp() < $start->getTimestamp();
     return apply_filters('promotions/functions/is_before_start', $before, $post_id );
   }
@@ -25,7 +25,7 @@ class Promotions_Functions
   public function is_after_end( $post_id )
   {
     $now = new DateTime( 'now', $this->get_timezone() );
-    $start = $this->get_end();
+    $end = $this->get_end( $post_id );
     $after = $now->getTimestamp() > $end->getTimestamp();
     return apply_filters('promotions/functions/is_after_end', $after, $post_id );
   }

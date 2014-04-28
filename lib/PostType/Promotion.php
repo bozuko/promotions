@@ -13,9 +13,12 @@
  * @wp.posttype.args.map_meta_cap           true  
  * 
  * @wp.posttype.supports.editor             false
+ * @wp.posttype.supports.revisions          true
  */
 class Promotions_PostType_Promotion extends Snap_Wordpress_PostType
 {
+  
+  protected $forms = array();
   
   /**
    * Give administrators all the capabilities for this post type
@@ -34,5 +37,34 @@ class Promotions_PostType_Promotion extends Snap_Wordpress_PostType
         $role->add_cap($capability);
       }
     }
+  }
+  
+  public function get_registration_form( $post_id=null )
+  {
+    if( !$post_id ) $post_id = get_the_ID();
+    if( isset( $this->forms[$post_id] ) ) return $this->forms[$post_id];
+    
+    $fields = get_field('form_fields', $post_id);
+    $form = new Snap_Wordpress_Form2_Form(array('promotion_id' => $post_id));
+    
+    foreach( $fields as $field ){
+      $config = json_decode( $field['field'], true );
+      $form->add_field( $config['name'], $config['type'], $config );
+    }
+    
+    $validators = get_field('form_validators', $post_id);
+    if( $validators && is_array($validators) ) foreach( $validators as $validator ){
+      $config = json_decode( $validator['validator'], true );
+      if( is_array($config) && isset($config['classname'])){
+        $classname = $config['classname'];
+        if( class_exists( $classname ) ){
+          $form->add_validator( new $classname( $config ) );
+        }
+      }
+    }
+    do_action_ref_array('promotions/registration_form/create', array(&$form) );
+    
+    $this->forms[$post_id] = $form;
+    return $form;
   }
 }

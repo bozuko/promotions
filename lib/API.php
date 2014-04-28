@@ -4,15 +4,40 @@ class Promotions_API extends Snap_Wordpress_Plugin
 {
   
   public $methods;
+  protected $history = array();
   
   /**
    * @wp.action         init
    */
   public function init()
   {
-    $methods = new stdClass;
+    if( !isset($this->methods) ) $this->methods = new stdClass;
     $this->methods = apply_filters( 'promotions/api/register_methods', $methods );
     add_rewrite_endpoint('api', EP_PERMALINK | EP_ROOT );
+    do_action_ref_array('promotions/api/register', array( $this ));
+  }
+  
+  public function register_method( $name, $callback, $request_method='post')
+  {
+    if( !isset($this->methods) ) $this->methods = new stdClass;
+    
+    $this->methods->$name = array(
+      'fn'              => $callback,
+      'request_method'  => $request_method
+    );
+  }
+  
+  public function add( $class )
+  {
+    $snap = Snap::get( $class );
+    $methods = $snap->getRegistry()->get('method');
+    $inst = Snap::inst( $class );
+    
+    foreach( array_keys($methods) as $name ){
+      if( !$snap->method($name, 'snap.public' ) ) continue;
+      $this->register_method( $name, array(&$inst, $name), $snap->method($name, 'methods', 'post') );
+    }
+    
   }
   
   /**
@@ -30,6 +55,17 @@ class Promotions_API extends Snap_Wordpress_Plugin
     if( !isset( $this->methods->$name ) ){
       return $this->returnJSON(array(
         'error' => 'Invalid API Method'
+      ));
+    }
+    
+    /********************************************************
+    * This filter allows us to restrict direct API calls by
+    * IP or api key
+    *********************************************************/
+    if( !apply_filters('promotions/api/allowed', true, $name ) ){
+      // invalid...
+      return $this->returnJSON(array(
+        'error' => 'API call is not allowed'
       ));
     }
     
@@ -81,8 +117,24 @@ class Promotions_API extends Snap_Wordpress_Plugin
     }
     
     $method = $this->methods->$name;
+    $result = call_user_func( $method['fn'], $params );
     
-    return call_user_func( $method['fn'], $params );
+    $this->_history[] = array(
+      'method'  => $name,
+      'result'  => $result
+    );
     
+    return $result;
+    
+  }
+  
+  public function has_method( $name )
+  {
+    return isset( $this->methods->$name );
+  }
+  
+  public function get_method( $name )
+  {
+    return $this->methods->$name;
   }
 }
