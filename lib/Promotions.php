@@ -24,6 +24,13 @@ class Promotions extends Promotions_Plugin_Base
     
     // Enable our core API
     Snap::inst('Promotions_API');
+  }
+  
+  /**
+   * @wp.action     init
+   */
+  public function launch()
+  {
     
     // 3rd party plugins
     $this->init_3rd_party_plugins();

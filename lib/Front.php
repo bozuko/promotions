@@ -14,6 +14,7 @@ class Promotions_Front extends Snap_Wordpress_Plugin
   
   /**
    * @wp.action init
+   * @wp.priority 20
    */
   public function fix_code_area()
   {
@@ -29,7 +30,12 @@ class Promotions_Front extends Snap_Wordpress_Plugin
     
     if( is_singular('promotion') ){
       // enable our decorator
-      Snap::inst('Snap_Wordpress_Form2_Decorator_Bootstrap3');
+      Snap::inst(
+        apply_filters(
+          'promotions/form/decorator',
+          'Snap_Wordpress_Form2_Decorator_Bootstrap3'
+        )
+      );
     }
   }
   
