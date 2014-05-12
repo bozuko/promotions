@@ -8,7 +8,6 @@ Author: Bozuko
 Author URI: http://bozuko.com
 License: Proprietary
 */
-
 add_action('plugins_loaded', function()
 {
     
