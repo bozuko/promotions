@@ -16,7 +16,7 @@ class Promotions_Functions
   
   public function is_before_start( $post_id )
   {
-    $now = new DateTime( 'now', $this->get_timezone() );
+    $now = $this->now();
     $start = $this->get_start( $post_id );
     $before = $now->getTimestamp() < $start->getTimestamp();
     return apply_filters('promotions/functions/is_before_start', $before, $post_id );
@@ -24,7 +24,7 @@ class Promotions_Functions
   
   public function is_after_end( $post_id )
   {
-    $now = new DateTime( 'now', $this->get_timezone() );
+    $now = $this->now();
     $end = $this->get_end( $post_id );
     $after = $now->getTimestamp() > $end->getTimestamp();
     return apply_filters('promotions/functions/is_after_end', $after, $post_id );
@@ -34,6 +34,12 @@ class Promotions_Functions
   {
     $active = !$this->is_before_start() && !$this->is_after_end();
     return apply_filters('promotions/functions/is_active', $active, $post_id );
+  }
+  
+  public function now()
+  {
+    $now = new DateTime( 'now', $this->get_timezone() );
+    return apply_filters('promotions/functions/now', $now);
   }
   
   public function get_start( $post_id )
@@ -50,5 +56,14 @@ class Promotions_Functions
     $date = date('Y-m-d H:i:s', strtotime( $end ));
     $time = new DateTime( $date, $this->get_timezone() );
     return apply_filters('promotions/functions/get_end', $time, $post_id );
+  }
+  
+  public function is_enabled( $name, $post_id=false )
+  {
+    if( !$post_id ) $post_id = get_the_ID();
+    
+    // need to get
+    $enabled_features = get_field('promotion_enabled_features', $post_id );
+    return in_array( $name, $enabled_features );
   }
 }

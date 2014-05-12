@@ -3,6 +3,8 @@
 class Promotions_Shortcodes extends Snap_Wordpress_Shortcodes
 {
   
+  protected $_form = false;
+  
   /**
    * @wp.shortcode
    */
@@ -12,37 +14,55 @@ class Promotions_Shortcodes extends Snap_Wordpress_Shortcodes
       'class'       => '',
       'method'      => 'post',
       'action'      => '?',
-      'promotion'   => false
+      'promotion'   => false,
+      'form_id'     => false
     ), $atts, 'form'));
     
-    if( !$promotion ){
-      if( !is_singular('promotion') ) return;
-      $promotion = get_the_ID();
-    }
-    else {
-      $promotion = get_page_by_path( $promotion, OBJECT, 'promotion' );
-      if( !$promotion ) return;
-      $promotion = $promotion->ID;
+    if( $form_id ){
+      $form = Snap_Wordpress_Form2::get_form( $form_id );
+      if( !$form ) return;
+      $this->_form = $form;
     }
     
-    $content.=wp_nonce_field( get_post($promotion)->post_name, '_promotion', true, false);
-    $content.=Snap_Util_Html::tag(array(
-      'tag'         =>'input',
-      'attributes'  =>array(
-        'type'        =>'hidden',
-        'name'        =>'_method',
-        'value'       =>'register'
-      )
-    ));
+    else {
+      if( !$promotion ){
+        if( !is_singular('promotion') ) return;
+        $promotion = get_the_ID();
+      }
+      else {
+        $promotion = get_page_by_path( $promotion, OBJECT, 'promotion' );
+        if( !$promotion ) return;
+        $promotion = $promotion->ID;
+      }
+      
+      $content.=wp_nonce_field( get_post($promotion)->post_name, '_promotion', true, false);
+      $content.=Snap_Util_Html::tag(array(
+        'tag'         =>'input',
+        'attributes'  =>array(
+          'type'        =>'hidden',
+          'name'        =>'_method',
+          'value'       =>'register'
+        )
+      ));
+      
+      $this->_form = Snap::inst('Promotions_PostType_Promotion')
+            ->get_registration_form( $promotion );
+      
+      $content = apply_filters('promotions/registration_form/content', $content, $this->form, $promotion );
+    }
     
     echo Snap_Util_Html::tag(array(
       'tag'         => 'form',
       'attributes'  => array(
         'method'      => $method,
-        'action'      => get_permalink( $promotion )
+        'action'      => get_permalink( $promotion ),
+        'class'       => $class,
+        'data-validate-config' => json_encode($this->_form->get_jquery_validate_config())
       ),
       'content'     => do_shortcode( $content ) 
     ));
+    
+    $this->_form = null;
     
   }
   
@@ -53,22 +73,10 @@ class Promotions_Shortcodes extends Snap_Wordpress_Shortcodes
   {
     extract( shortcode_atts( array(
       'class'       => '',
-      'name'        => '',
-      'promotion'   => false
+      'name'        => ''
     ), $atts, 'field') );
     
-    if( !$promotion ){
-      if( !is_singular('promotion') ) return;
-      $promotion = get_the_ID();
-    }
-    else {
-      $promotion = get_page_by_path( $promotion, OBJECT, 'promotion' );
-      if( !$promotion ) return;
-      $promotion = $promotion->ID;
-    }
-    
-    echo Snap::inst('Promotions_PostType_Promotion')
-          ->get_registration_form( $promotion )
+    echo $this->_form
           ->get_field( $name )
           ->get_html();
     

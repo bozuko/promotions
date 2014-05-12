@@ -11,6 +11,12 @@ class Promotions_Plugin_Base extends Snap_Wordpress_Plugin
   {
     parent::__construct();
     Snap::inst('Promotions_Plugin_Manager')->register( $this );
+    $this->init();
+  }
+  
+  protected function init()
+  {
+    // override me.
   }
   
   public function register_field_groups()

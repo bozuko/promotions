@@ -1,6 +1,6 @@
 <?php
 /**
- * Age Gate Plugin
+ * Entry Limit Plugin
  */
 
 class Promotions_Core_EntryLimit_Plugin extends Promotions_Plugin_Base
@@ -10,6 +10,7 @@ class Promotions_Core_EntryLimit_Plugin extends Promotions_Plugin_Base
    */
   public function register_validator($form)
   {
-    $form->register('Promotions_Core_EntryLimit_Form_Validator');
+    if( !Snap::inst('Promotions_Functions')->is_enabled('returnuser') )
+      $form->register('Promotions_Core_EntryLimit_Form_Validator');
   }
 }

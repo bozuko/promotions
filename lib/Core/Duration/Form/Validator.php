@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @validator_form.name                     entrylimit
- * @validator_form.label                    Entry Limit
+ * @validator_form.name                     duration
+ * @validator_form.label                    Duration
  *
  * @validator_form.args.source.label        Source
  * @validator_form.args.source.input        field

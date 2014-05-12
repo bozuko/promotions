@@ -117,7 +117,14 @@ class Promotions_API extends Snap_Wordpress_Plugin
     }
     
     $method = $this->methods->$name;
+    
+    if( ($result = apply_filters("promotions/api/$name/before", true, $params, $name )) !== true ){
+      return $result;
+    }
+    
     $result = call_user_func( $method['fn'], $params );
+    $result = apply_filters('promotions/api/result', $result, $name, $params );
+    $result = apply_filters('promotions/api/result?method='.$name, $result, $params );
     
     $this->_history[] = array(
       'method'  => $name,

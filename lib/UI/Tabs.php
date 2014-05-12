@@ -81,8 +81,11 @@ class Promotions_UI_Tabs extends Snap_Wordpress_Plugin
   public function acf_location_rule_types( $types )
   {
     $obj = get_post_type_object( $this->post_type );
-    
-    return array( $obj->labels->name => array($this->post_type.'_tab'=>'Tab')) + $types;
+    if( !isset( $types[$obj->labels->name] ) ){
+      return array( $obj->labels->name => array($this->post_type.'_tab'=>'Tab')) + $types;
+    }
+    $types[$obj->labels->name][$this->post_type.'_tab'] = 'Tab';
+    return $types;
   }
   
   public function acf_location_rule_values( $choices )

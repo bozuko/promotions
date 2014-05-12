@@ -31,6 +31,17 @@ if(function_exists("register_field_group"))
         'save_as_timestamp' => 'true',
         'get_as_timestamp' => 'false',
       ),
+      array (
+        'key' => 'field_536b90c09e9a0',
+        'label' => 'Features',
+        'name' => 'promotion_enabled_features',
+        'type' => 'checkbox',
+        'choices' => array (
+          'demo' => 'Demo Mode',
+        ),
+        'default_value' => '',
+        'layout' => 'vertical',
+      ),
     ),
     'location' => array (
       array (

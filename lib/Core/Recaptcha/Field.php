@@ -23,6 +23,8 @@ require_once(dirname(__FILE__).'/_lib/recaptchalib.php');
 class Promotions_Core_Recaptcha_Field extends Snap_Wordpress_Form2_Field_Abstract
 {
   
+  protected $style = 'block';
+  
   public function init()
   {
     $this->add_validator( new Promotions_Core_Recaptcha_Validator() );

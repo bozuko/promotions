@@ -27,4 +27,16 @@ class Promotions_Core_AgeGate_Plugin extends Promotions_Plugin_Base
     }
     return $template;
   }
+  
+  /**
+   * @wp.filter       promotions/api/can_call_method
+   */
+  public function disable_registration()
+  {
+    // check for cookie
+    if( isset($_COOKIE['ineligible'] ) ){
+      //return false;
+    }
+    return true;
+  }
 }

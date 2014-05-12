@@ -1,3 +1,9 @@
 #poststuff h2.promotion-tabs{
   padding-bottom: 0;
 }
+
+#poststuff h2.promotion-tabs .nav-tab {
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px 6px;
+}
