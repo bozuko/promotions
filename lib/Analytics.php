@@ -2,5 +2,8 @@
 
 class Promotions_Analytics
 {
-  #code
+  public function increment()
+  {
+    
+  }
 }

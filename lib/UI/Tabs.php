@@ -69,7 +69,8 @@ class Promotions_UI_Tabs extends Snap_Wordpress_Plugin
     unset( $actions['edit'] );
     unset( $actions['inline hide-if-no-js'] );
     $new_actions = array();
-    foreach( $this->tabs as $tab => $label ){
+    $tabs = apply_filters('promotions/tabs/'.$this->post_type.'/display', $this->tabs, $post);
+    foreach( $tabs as $tab => $label ){
       $new_actions[$tab] = '<a href="'.add_query_arg('tab', $tab, get_edit_post_link( $post->ID )).'">'.$label.'</a>';
     }
     return $new_actions + $actions;
@@ -121,12 +122,13 @@ class Promotions_UI_Tabs extends Snap_Wordpress_Plugin
     if( $post->post_type !== $this->post_type || !count($this->tabs) ) return;
     $tab = $this->get_current_tab();
     $url = remove_query_arg('message');
+    
     ?>
     <input type="hidden" name="tab" value="<?= $tab ?>" />
     <h2 class="nav-tab-wrapper promotion-tabs">
       <?php
-      
-      foreach( $this->tabs as $id => $label ){
+      $tabs = apply_filters('promotions/tabs/'.$this->post_type.'/display', $this->tabs, $post);
+      foreach( $tabs as $id => $label ){
         $classes = array('nav-tab');
         
         if( $tab == $id ){
