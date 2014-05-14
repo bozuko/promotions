@@ -4,6 +4,7 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
 {
   protected $flash_key = 'registration_success';
   protected $post_id;
+  protected $result;
   
   /**
    * @wp.action         promotions/api/register
@@ -21,6 +22,11 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     return false;
   }
   
+  public function get_result()
+  {
+    return $this->result;
+  }
+  
   /**
    * @wp.action promotions/process
    */
@@ -29,6 +35,7 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     
     // first, lets check for a previous success (if redirected)
     if( ($result = Promotions_Flash::get( $this->flash_key )) ){
+      $this->result = $result;
       $this->post_id = $result['registration_id'];
       return;
     }
