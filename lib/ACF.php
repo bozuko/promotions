@@ -12,7 +12,7 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
 		
     $this->dev_mode = get_field('promotions_dev', 'option');
 		
-    if( get_field('promotions_dev', 'option') ){
+    if( $this->dev_mode ){
       // we are going to use the fields from the database
       return;
     }
@@ -22,13 +22,17 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
     // Remove the filter for pulling fields from db.
 		remove_all_filters('acf/get_field_groups', 1);
     $plugins = Snap::inst('Promotions_Plugin_Manager')->get_plugins();
-    foreach( $plugins as $plugin ){
+		foreach( $plugins as $plugin ){
       $field_groups = $plugin->get_field_groups();
       $dir = $plugin->get_data_dir().'/acf';
       
       foreach( $field_groups as $group ){
         $file = $dir.'/'.$group.'.php';
-        if( file_exists( $file ) ) require($dir.'/'.$group.'.php');
+				//echo "$file\n";
+        if( file_exists( $file ) ){
+					echo "$file\n";
+					require($dir.'/'.$group.'.php');
+				}
       }
     }
     
