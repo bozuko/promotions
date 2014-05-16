@@ -38,14 +38,14 @@ class Promotions extends Promotions_Plugin_Base
     // Promotions Plugins
     do_action('promotions/plugins/load');
     
-    // Register fields
-    do_action('promotions/register_fields');
-    
     // Launch our primary controllers
     Snap::inst(is_admin()?'Promotions_Admin':'Promotions_Front');
     
     // Run our initialization hook
     do_action('promotions/init');
+    
+    // Register fields
+    do_action('promotions/register_fields');
   }
   
   /**
