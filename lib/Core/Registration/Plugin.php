@@ -87,6 +87,22 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
       return $template;
     }
     return 'thanks';
-    
+  }
+  
+  /**
+   * @wp.filter   snap/form/field/options
+   */
+  public function extra_field_options( $options )
+  {
+    $options['no_save'] = array(
+      'input'       => 'checkbox',
+      'label'       => 'Don\'t Save to DB'
+    );
+    $options['export_label'] = array(
+      'input'       => 'text',
+      'label'       => 'Export Label',
+      'placeholder' => 'Leave blank to use "Label"'
+    );
+    return $options;
   }
 }

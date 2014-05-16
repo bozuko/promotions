@@ -26,9 +26,8 @@ class Promotions_Front extends Snap_Wordpress_Plugin
    */
   public function process()
   {
-    do_action('promotions/process');
-    
     if( is_singular('promotion') ){
+      do_action('promotions/process');
       // enable our decorator
       Snap::inst(
         apply_filters(

@@ -75,5 +75,4 @@ class Promotions extends Promotions_Plugin_Base
   {
     Snap::inst('Promotions_ACF');
   }
-  
 }

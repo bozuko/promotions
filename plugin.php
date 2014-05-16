@@ -23,6 +23,8 @@ add_action('plugins_loaded', function()
     define( 'PROMOTIONS_DIR', dirname(__FILE__) );
     define( 'PROMOTIONS_URL', plugins_url( '', __FILE__ ) );
     
+    require_once( PROMOTIONS_DIR.'/vendor/autoload.php' );
+    
     Snap_Loader::register( 'Promotions', PROMOTIONS_DIR . '/lib' );
     Snap::inst('Promotions');
 });

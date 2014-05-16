@@ -89,7 +89,8 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
    */
   public function options_settings( $settings )
   {
-    $settings['pages'] = array('General','Theme');
+		if( !is_array($settings['pages']) ) $settings['pages'] = array();
+    $settings['pages'][] = 'Promotions';
     return $settings;
   }
   

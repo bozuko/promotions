@@ -40,9 +40,11 @@ class Promotions_Core_Cleanup_Plugin extends Promotions_Plugin_Base
       <strong><?= $registrations ?></strong> Registrations<br />
       <strong><?= $entries ?></strong> Entries<br />
     </p>
-    <a href="<?= add_query_arg('cleanup_promotion', '1') ?>" class="button button-primary" data-action="cleanup">
-      Remove Registrations and Entries
+    <p style="text-align:left;">
+    <a href="<?= add_query_arg('cleanup_promotion', '1') ?>" class="delete" data-action="cleanup">
+      Clean up Registrations and Entries
     </a>
+    </p>
     <?php
   }
   
