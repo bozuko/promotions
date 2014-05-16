@@ -28,9 +28,7 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
       
       foreach( $field_groups as $group ){
         $file = $dir.'/'.$group.'.php';
-				//echo "$file\n";
-        if( file_exists( $file ) ){
-					echo "$file\n";
+				if( file_exists( $file ) ){
 					require($dir.'/'.$group.'.php');
 				}
       }

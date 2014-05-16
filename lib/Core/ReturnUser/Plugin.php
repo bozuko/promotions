@@ -3,6 +3,11 @@
 class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
 {
   
+  protected function init()
+  {
+    $this->register_field_groups('return-user-logic');
+  }
+  
   /**
    * @wp.filter       promotions/features
    */
@@ -12,13 +17,6 @@ class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
     return $features;
   }
   
-  /**
-   * @wp.action     promotions/init
-   */
-  public function promotions_init()
-  {
-    
-  }
   
   /**
    * @wp.action         promotions/api/register
