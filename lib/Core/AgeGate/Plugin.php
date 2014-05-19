@@ -22,9 +22,20 @@ class Promotions_Core_AgeGate_Plugin extends Promotions_Plugin_Base
    */
   public function ineligible_template( $template, $promotion )
   {
+    
     if( isset($_COOKIE['ineligible'] ) ){
+      
       return 'ineligible';
     }
+    
+    $form = Snap::inst('Promotions_PostType_Promotion')->get_registration_form( get_the_ID() );
+    if( $form->has_validated() ){
+      $errors = $form->get_form_errors();
+      if( isset($errors['agegate']) ){
+        return 'ineligible';
+      }
+    }
+    
     return $template;
   }
   

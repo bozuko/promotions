@@ -24,6 +24,15 @@ if(function_exists("register_field_group"))
         'media_upload' => 'yes',
       ),
       array (
+        'key' => 'field_5376418dcac27',
+        'label' => 'Introduction',
+        'name' => 'message_introduction',
+        'type' => 'wysiwyg',
+        'default_value' => '',
+        'toolbar' => 'full',
+        'media_upload' => 'yes',
+      ),
+      array (
         'key' => 'field_532fa14e1a1d8',
         'label' => 'Thank You',
         'name' => 'message_thank_you',

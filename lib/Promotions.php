@@ -75,4 +75,25 @@ class Promotions extends Promotions_Plugin_Base
   {
     Snap::inst('Promotions_ACF');
   }
+  
+  /**
+   * @wp.action   snap/form/field/register
+   */
+  public function register_form_fields( $form2 )
+  {
+    $form2->register('Promotions_Form_Field_Phone');
+    $form2->register('Promotions_Form_Field_Date');
+  }
+  
+  /**
+   * @wp.filter   snap/form/field/html
+   */
+  public function add_links_to_field_text( $html )
+  {
+    return preg_replace_callback('#\{\{slug\:([^\}]*?)\}\}#', function( $matches ){
+      return get_permalink(
+        get_page_by_path($matches[1])->ID
+      );
+    }, $html);
+  }
 }

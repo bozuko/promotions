@@ -42,10 +42,10 @@ class Promotions_Core_AgeGate_Form_Validator extends Snap_Wordpress_Form2_Valida
     
     // single field
     else {
-      $time = strtotime( $this->get_form()->get_field( $source )->get_value() );
-      $value['year'] = date($time,'Y');
-      $value['month'] = date($time,'m');
-      $value['day'] = date($time,'d');
+      $time = strtotime( $this->get_form()->get_field( $source )->get_value_formatted() );
+      $value['year'] = date('Y',$time);
+      $value['month'] = date('m',$time);
+      $value['day'] = date('d',$time);
     }
     
     $now = Snap::inst('Promotions_Functions')->now();

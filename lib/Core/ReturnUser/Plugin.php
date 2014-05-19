@@ -27,6 +27,29 @@ class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
   }
   
   /**
+   * Detect if ineligibility has been decided and make sure that we
+   * do not display the form if so.
+   *
+   * @wp.filter       promotions/content/template
+   * @wp.priority     20
+   */
+  public function already_entered( $template, $promotion )
+  {
+    
+    if( !Snap::inst('Promotions_Functions')->is_enabled('returnuser') ) return $template;
+    
+    $form = Snap::inst('Promotions_PostType_Promotion')->get_registration_form( get_the_ID() );
+    if( $form->has_validated() ){
+      $errors = $form->get_form_errors();
+      if( isset($errors['returnuser']) ){
+        return 'already-entered';
+      }
+    }
+    
+    return $template;
+  }
+  
+  /**
    * @wp.filter         promotions/registration_form/create
    */
   public function add_validator( $form )
