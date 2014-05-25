@@ -41,6 +41,8 @@ class Promotions extends Promotions_Plugin_Base
     // Launch our primary controllers
     Snap::inst(is_admin()?'Promotions_Admin':'Promotions_Front');
     
+    Snap::inst('Promotions_Analytics')->init();
+    
     // Run our initialization hook
     do_action('promotions/init');
     
