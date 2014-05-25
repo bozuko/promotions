@@ -104,6 +104,20 @@ class Promotions_API extends Snap_Wordpress_Plugin
   }
   
   /**
+   * By default, strip all html from these parameters.
+   *
+   * @wp.filter       promotions/api/params_http
+   */
+  public function default_params_filter( $params )
+  {
+    die($params);
+    foreach( $params as $key => $value ){
+      $params[$key] = wp_kses( $value );
+    }
+    return $params;
+  }
+  
+  /**
    * Internal api calls
    *
    * @param string  name    the name of the API method to call

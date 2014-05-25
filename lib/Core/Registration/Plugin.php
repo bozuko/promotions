@@ -53,6 +53,7 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     
     $post = $_POST;
     $post = stripslashes_deep( $post );
+    foreach( $post as $key => $value ) $post[$key] = wp_kses( $value );
     $result = Snap::inst('Promotions_API')->call($method, $post);
     
     
