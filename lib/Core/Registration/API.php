@@ -13,7 +13,6 @@ class Promotions_Core_Registration_API
     $form->set_data( $params );
     
     $valid = $form->validate();
-    
     // try to validate...
     if( !$valid ){
       
@@ -31,6 +30,8 @@ class Promotions_Core_Registration_API
       return $result;
     }
     
+    
+    
     $data = $form->get_data();
     
     $key = $data[ get_field('registration_key_field') ];
@@ -43,12 +44,17 @@ class Promotions_Core_Registration_API
       'post_parent'       => get_the_ID()
     ));
     
-    // we should check to see if this was an error
+    /**
+     * TODO: we should check to see if this was an error
+     * in wp_insert_post
+     */
     
     foreach( $data as $name => $value ){
       $value = apply_filters('promotions/registration/meta/save_to_db', $value, $name, get_the_ID());
       update_post_meta( $registration_id, $name, $value );
     }
+    
+    // should we enter an entry? I think so.
     
     // Add an entry
     $entry_id = wp_insert_post(array(

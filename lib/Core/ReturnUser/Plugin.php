@@ -27,6 +27,20 @@ class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
   }
   
   /**
+   * @wp.action         promotions/api/result?method=enter
+   */
+  public function on_enter( $result )
+  {
+    
+    if( @$result['success'] )
+      Snap::inst('Promotions_Analytics')
+        ->increment('registration_entries')
+        ->increment('entries');
+      
+    return $result;
+  }
+  
+  /**
    * Detect if ineligibility has been decided and make sure that we
    * do not display the form if so.
    *

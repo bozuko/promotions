@@ -105,4 +105,36 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     );
     return $options;
   }
+  
+  /**
+   * @wp.action   promotions/analytics/register
+   */
+  public function register_analytics_buckets( $analytics )
+  {
+    $analytics->register('registrations', array(
+      'label'     => 'Registrations'
+    ));
+    
+    $analytics->register('entries', array(
+      'label'     => 'Entries'
+    ));
+    
+    $analytics->register('registration_entries', array(
+      'label'     => 'Registration Entries'
+    ));
+  }
+  
+  /**
+   * @wp.action   promotions/api/result?method=register
+   */
+  public function increment_counters( $result )
+  {
+    if( $result && @$result['success'] ){
+      Snap::inst('Promotions_Analytics')
+        ->increment('registrations')
+        ->increment('entries')
+        ->increment('registration_entries');
+    }
+    return $result;
+  }
 }
