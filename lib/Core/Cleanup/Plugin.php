@@ -107,6 +107,14 @@ class Promotions_Core_Cleanup_Plugin extends Promotions_Plugin_Base
     ";
     $wpdb->query( $wpdb->prepare( $sql, $post_id ) );
     
+    $sql = "
+      DELETE FROM `{$wpdb->promotions_analytics}`
+        WHERE `promotion_id` = %d
+    ";
+    $wpdb->query( $wpdb->prepare( $sql, $post_id ) );
+    
+    do_action('promotions/cleanup', $post_id);
+    
     Promotions_Flash::set('cleanup', 'Cleaned up '.$post->post_title);
     wp_safe_redirect(remove_query_arg('cleanup_promotion'));
     exit;

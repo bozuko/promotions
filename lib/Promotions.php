@@ -48,6 +48,7 @@ class Promotions extends Promotions_Plugin_Base
     
     // Register fields
     do_action('promotions/register_fields');
+    
   }
   
   /**

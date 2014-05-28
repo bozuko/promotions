@@ -6,6 +6,49 @@ class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
   protected function init()
   {
     $this->register_field_groups('return-user-logic');
+    
+  }
+  /**
+   * @wp.action     promotions/init
+   */
+  public function fix_stats()
+  {
+    if( !is_admin() ||  @$_REQUEST['fix_stats'] != 'return-entries' ){
+      return;
+    }
+    
+    
+    global $wpdb;
+    
+    $sql = <<<SQL
+SELECT `post_date`,`ID`,`post_parent` FROM `{$wpdb->posts}`
+  WHERE `post_type` = 'entry'
+  AND `post_name` LIKE 'registration%'
+  AND `post_name` NOT LIKE 'registration-entry-%'
+SQL;
+
+    $results = $wpdb->get_results( $sql );
+    
+    foreach( $results as $result ){
+      if(!get_post_meta( $result->ID, 'entry_type', true) ){
+        
+        $reg = get_post( $result->post_parent );
+        $promotion_id = $reg->post_parent;
+        
+        $timestamp = new DateTime($result->post_date, Snap::inst('Promotions_Functions')->get_timezone() );
+        $str = $timestamp->format('Y-m-d H:i:s');
+        
+        $wpdb->show_errors(true);
+        Snap::inst('Promotions_Analytics')
+          ->decrement('registration_entries', $timestamp, $promotion_id );
+        
+        Snap::inst('Promotions_Analytics')
+          ->increment('return_entries', $timestamp, $promotion_id );
+        
+        update_post_meta( $result->ID, 'entry_type', 'return');
+        
+      }
+    }
   }
   
   /**
@@ -27,16 +70,26 @@ class Promotions_Core_ReturnUser_Plugin extends Promotions_Plugin_Base
   }
   
   /**
+   * @wp.action   promotions/analytics/register
+   */
+  public function register_analytics_buckets( $analytics )
+  {
+    $analytics->register('return_entries', array(
+      'label'     => 'Return Entries'
+    ));
+  }
+  
+  /**
    * @wp.action         promotions/api/result?method=enter
    */
   public function on_enter( $result )
   {
     
-    if( @$result['success'] )
+    if( @$result['success'] ){
       Snap::inst('Promotions_Analytics')
-        ->increment('registration_entries')
-        ->increment('entries');
-      
+        ->increment('entries')
+        ->increment('return_entries');
+    }
     return $result;
   }
   
