@@ -14,6 +14,10 @@
  * @validator_form.args.vtype.label         Validation Type
  * @validator_form.args.vtype.input         select
  * @validator_form.args.vtype.options       {"day":"Validate on Day", "month":"Validate on Month"}
+ *
+ * @validator_form.args.exceptions.label        Exceptions
+ * @validator_form.args.exceptions.input        text
+ * @validator_form.args.exceptions.description  Exceptions in the format <pre>field_name=value:age</pre> separated by commas
  */
 class Promotions_Core_AgeGate_Form_Validator extends Snap_Wordpress_Form2_Validator_Form_Abstract
 {
@@ -29,6 +33,28 @@ class Promotions_Core_AgeGate_Form_Validator extends Snap_Wordpress_Form2_Valida
     $valid = true;
     $source = $this->get_config('arg.source');
     $age = $this->get_config('arg.age');
+    
+    if( ($exceptions = $this->get_config('arg.exceptions')) ){
+      $has_all_fields = true;
+      $exceptions = explode(';', $exceptions);
+      foreach( $exceptions as $exception ){
+        
+        list($condition, $exception_age) = explode(':', $exception);
+        list($field, $values) = explode('=', $condition);
+        $values = explode(',', $values);
+        
+        $field = $this->get_form()->get_field($field);
+        if( !$field || !$field->get_value() ){
+          $has_all_fields = false;
+        }
+        
+        if( $field && in_array( $field->get_value(), $values ) ){
+          $age = $exception_age;
+        }
+      }
+      
+      if( !$has_all_fields ) return true;
+    }
     
     $value = array();
     
