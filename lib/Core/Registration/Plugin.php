@@ -116,7 +116,7 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     ));
     
     $analytics->register('entries', array(
-      'label'     => 'Entries'
+      'label'     => 'Total Entries'
     ));
     
     $analytics->register('registration_entries', array(

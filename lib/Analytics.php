@@ -181,6 +181,53 @@ SQL;
     return $this;
   }
   
+  public function decrement( $metric, $timestamp=null, $promotion_id=null )
+  {
+    global $wpdb;
+    if( !isset( $this->metrics[$metric] ) ) return;
+    
+    
+    if( !$timestamp ){
+      $timestamp = Snap::inst('Promotions_Functions')->now();
+    }
+    
+    $mysql_now = $timestamp->format('Y-m-d H:i:s');
+    
+    if( !isset( $promotion_id ) ) $promotion_id = get_the_ID();
+    
+    foreach( $this->intervals as $interval => $options ){
+      $date = $timestamp->format( $options['format'] );
+      
+      $start = $options['get_start']( $timestamp, $promotions_id );
+      $end = $options['get_end']( $timestamp, $promotions_id );
+      
+      $sql = <<<SQL
+UPDATE {$wpdb->promotions_analytics}
+  SET `total` = `total`-1, `last_modified` = %s
+  WHERE `promotion_id` = %d
+    AND `metric` = %s
+    AND `unit_interval` = %s
+    AND `unit` = %s
+    AND `start` = %s
+    AND `end` = %s
+SQL;
+      $sql = $wpdb->prepare(
+        $sql,
+        $mysql_now,
+        $promotion_id,
+        $metric,
+        $interval,
+        $date,
+        $start,
+        $end
+      );
+      echo $sql;
+      $wpdb->query( $sql );
+    }
+    
+    return $this;
+  }
+  
   public function get( $promotion_id, $metric, $interval )
   {
     global $wpdb;

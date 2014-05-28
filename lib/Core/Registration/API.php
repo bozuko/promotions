@@ -30,18 +30,20 @@ class Promotions_Core_Registration_API
       return $result;
     }
     
-    
-    
     $data = $form->get_data();
     
     $key = $data[ get_field('registration_key_field') ];
+    
+    $now = Snap::inst('Promotions_Functions')->now()->format('Y-m-d H:i:s');
+    
     
     // Create a new registration
     $registration_id = wp_insert_post(array(
       'post_type'         => 'registration',
       'post_title'        => $key,
       'post_status'       => 'publish',
-      'post_parent'       => get_the_ID()
+      'post_parent'       => get_the_ID(),
+      'post_date'         => $now
     ));
     
     /**
@@ -62,8 +64,11 @@ class Promotions_Core_Registration_API
       'post_title'        => 'registration',
       'post_status'       => 'publish',
       'post_parent'       => $registration_id,
-      'post_name'         => 'registration-entry-for-'.$registration_id
+      'post_name'         => 'registration-entry-for-'.$registration_id,
+      'post_date'         => $now
     ));
+    
+    update_post_meta( $entry_id, 'entry_type', 'registration');
     
     return array(
       'success'           => true,

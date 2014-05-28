@@ -70,12 +70,17 @@ class Promotions_Core_ReturnUser_API extends Promotions_Plugin_Base
       );
     }
     
+    $now = Snap::inst('Promotions_Functions')->now()->format('Y-m-d H:i:s');
+    
     $entry_id = wp_insert_post(array(
       'post_type'     => 'entry',
       'post_parent'   => $id,
       'post_title'    => 'registration',
-      'post_status'   => 'publish'
+      'post_status'   => 'publish',
+      'post_date'     => $now
     ));
+    
+    update_post_meta($entry_id, 'entry_type', 'return');
     
     return array(
       'success'         => true,
