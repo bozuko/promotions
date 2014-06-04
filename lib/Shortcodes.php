@@ -35,7 +35,6 @@ class Promotions_Shortcodes extends Snap_Wordpress_Shortcodes
         $promotion = $promotion->ID;
       }
       
-      $content.=wp_nonce_field( get_post($promotion)->post_name, '_promotion', true, false);
       $content.=Snap_Util_Html::tag(array(
         'tag'         =>'input',
         'attributes'  =>array(
