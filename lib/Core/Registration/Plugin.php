@@ -41,9 +41,10 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     }
     
     // look for a nonce
-    if( !wp_verify_nonce( $_REQUEST['_promotion'], get_post()->post_name ) ){
-      return;
-    }
+    //if( !wp_verify_nonce( $_REQUEST['_promotion'], get_post()->post_name ) ){
+    //  return;
+    //}
+    
     $method = $_REQUEST['_method'];
     $api = Snap::inst('Promotions_API');
     
