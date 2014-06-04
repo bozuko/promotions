@@ -38,6 +38,9 @@ if(function_exists("register_field_group"))
         'type' => 'checkbox',
         'choices' => array (
           'demo' => 'Demo Mode',
+          'returnuser' => 'Return User Logic',
+          'instant_win' => 'Instant Win',
+          'share_entry' => 'Share Entries',
         ),
         'default_value' => '',
         'layout' => 'vertical',
