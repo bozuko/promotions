@@ -110,7 +110,6 @@ class Promotions_API extends Snap_Wordpress_Plugin
    */
   public function default_params_filter( $params )
   {
-    die($params);
     foreach( $params as $key => $value ){
       $params[$key] = wp_kses( $value );
     }
