@@ -30,7 +30,7 @@ class Promotions_Form_Field_Phone extends Snap_Wordpress_Form2_Field_Abstract
   public function get_value_formatted()
   {
     $value = (array) $this->get_value();
-    return $this->valid ?
+    return $this->valid && !$this->is_empty() ?
       '('.$value['area'].') '.$value['exchange'].' - '.$value['number'] :
       '';
   }
