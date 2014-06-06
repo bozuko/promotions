@@ -52,7 +52,7 @@ class Promotions_Core_Registration_API
      */
     
     foreach( $data as $name => $value ){
-      $value = apply_filters('promotions/registration/meta/save_to_db', $value, $name, get_the_ID());
+      $value = apply_filters('promotions/registration/meta/save_to_db', $value, $name, $form, get_the_ID());
       update_post_meta( $registration_id, $name, $value );
     }
     
