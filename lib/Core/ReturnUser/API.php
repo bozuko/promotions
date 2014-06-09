@@ -76,6 +76,7 @@ class Promotions_Core_ReturnUser_API extends Promotions_Plugin_Base
       'post_type'     => 'entry',
       'post_parent'   => $id,
       'post_title'    => 'registration',
+      'post_name'     => 'return-entry-for-'.$id,
       'post_status'   => 'publish',
       'post_date'     => $now
     ));
