@@ -24,8 +24,8 @@ if(function_exists("register_field_group"))
         'media_upload' => 'yes',
       ),
       array (
-        'key' => 'field_5376418dcac27',
-        'label' => 'Introduction',
+        'key' => 'field_5391267aad28c',
+        'label' => 'Form Introduction',
         'name' => 'message_introduction',
         'type' => 'wysiwyg',
         'default_value' => '',

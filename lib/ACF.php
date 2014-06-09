@@ -40,13 +40,34 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
    * @wp.action     acf/save_post
    * @wp.priority   11
    */
-  public function fix_dev_mode_change($post_id)
+  public function on_dev_mode_change($post_id)
   {
     if( $post_id != 'options' ) return;
     
     $dev_mode = get_field('promotions_dev','options');
     if( $dev_mode != $this->dev_mode ){
-      ?>
+			
+			if( $dev_mode ){
+				ob_start();
+				$plugins = Snap::inst('Promotions_Plugin_Manager')->get_plugins();
+				foreach( $plugins as $plugin ){
+					$field_groups = $plugin->get_field_groups();
+					$dir = $plugin->get_data_dir().'/acf';
+					foreach( $field_groups as $group ){
+						$file = $dir.'/'.$group.'.xml';
+						if( file_exists( $file ) && file_get_contents( $file ) ){
+							// try to import
+							echo "<h4>{$file}</h4>";
+							$importer = new Promotions_Util_Import_WP();
+							$importer->import( $file );
+						}
+					}
+				}
+				echo ob_get_clean();
+				
+			}
+			
+			?>
       <script type="text/javascript">
       window.location = "<?= add_query_arg('options-updated', '1') ?>";
       </script>
@@ -65,6 +86,10 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
     $plugins = Snap::inst('Promotions_Plugin_Manager')->get_plugins();
     
     $name = preg_replace('/^acf_/', '', get_post( $post_id )->post_name );
+		
+		$_POST['nonce'] = wp_create_nonce('export');
+		
+		$acf_path = apply_filters('acf/get_info', 'path');
     
     foreach( $plugins as $plugin ){
       $field_groups = $plugin->get_field_groups();
@@ -79,10 +104,17 @@ class Promotions_ACF extends Snap_Wordpress_Plugin
       if( !is_dir( $dir ) ) mkdir( $dir );
       
       // okay, save the fields.
-      $file = $dir.'/'.$name.'.php';
+      $php_file = $dir.'/'.$name.'.php';
+			$xml_file = $dir.'/'.$name.'.xml';
       
-      file_put_contents($file, $this->get_field_group_php( $post_id ) );
-      return;
+      file_put_contents($php_file, $this->get_field_group_php( $post_id ) );
+			
+			// lets also save the export file...
+			$_POST['acf_posts'] = array( $post_id );
+			ob_start();
+			include_once($acf_path . 'core/actions/export.php');
+			file_put_contents($xml_file, ob_get_clean());
+			return;
     }
   }
   
