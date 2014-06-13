@@ -28,8 +28,6 @@ class Promotions_Core_ReturnUser_Form_Validator extends Snap_Wordpress_Form2_Val
     
     $statement = $wpdb->prepare( $sql, $value, get_the_ID() );
     
-    //die( $statement );
-    
     if( $wpdb->get_var( $statement ) ){
       $this->add_message( self::ALREADY_REGISTERED );
       return false;

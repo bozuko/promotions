@@ -19,7 +19,7 @@ class Promotions_Flash
   
   public static function set( $key, $message )
   {
-    set_transient( self::key( $key ), $message );
+    set_transient( self::key( $key ), $message, 2 );
   }
   
   protected static function key( $key )

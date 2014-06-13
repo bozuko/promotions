@@ -34,7 +34,8 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
   {
     
     // first, lets check for a previous success (if redirected)
-    if( ($result = Promotions_Flash::get( $this->flash_key )) ){
+    $success = @$_REQUEST['success'];
+    if( $success && ($result = Promotions_Flash::get( $success )) ){
       $this->result = $result;
       $this->post_id = $result['registration_id'];
       return;
@@ -56,12 +57,15 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
     $post = stripslashes_deep( $post );
     foreach( $post as $key => $value ) $post[$key] = wp_kses( $value );
     $result = Snap::inst('Promotions_API')->call($method, $post);
-    
+    $this->result = $result;
     
     if( $result['success'] ){
-      Promotions_Flash::set( $this->flash_key, $result);
-      wp_safe_redirect(add_query_arg('success', 1));
-      exit;
+      $do_redirect = apply_filters('promotions/register/redirect_post', true, get_the_ID());
+      if( $do_redirect ){
+        Promotions_Flash::set( $result['registration_id'], $result);
+        wp_safe_redirect(add_query_arg('success', $result['registration_id']));
+        exit;
+      }
     }
   }
   
@@ -84,7 +88,6 @@ class Promotions_Core_Registration_Plugin extends Promotions_Plugin_Base
    */
   public function success_template( $template )
   {
-    
     if( !$this->post_id ){
       return $template;
     }
